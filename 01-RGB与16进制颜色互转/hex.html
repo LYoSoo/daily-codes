@@ -1,0 +1,83 @@
+<!--
+ * @Date: 2020-06-11 16:20:30
+ * @Author: LYoSoo
+ * @LastEditors: LYoSoo
+ * @LastEditTime: 2020-06-11 16:46:29
+-->
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <input class="hex" type="number" oninput="if(value.length>3)value=value.slice(0,3)">
+    <input class="hex" type="number" oninput="if(value.length>3)value=value.slice(0,3)">
+    <input class="hex" type="number" oninput="if(value.length>3)value=value.slice(0,3)">
+    <button onclick="change()">
+        转换
+    </button>
+    <span id="hexValue"></span><br>
+    <input id="sixth" oninput="(value = value.replace(/[^0-9a-fA-F]*/g, ''))">
+    <button onclick="toHex()">转换</button>
+    <span id="sixthValue"></span>
+</body>
+<script>
+    function change() {
+        let inputArray = document.getElementsByClassName("hex");
+        let array = [];
+        for (let i = 0; i < 3; i++) {
+            if (parseFloat(inputArray[i].value) > 255) {
+                alert("请输入 0 -255之间的数字");
+                return;
+            }
+            array = [...array, inputArray[i].value];
+        }
+        let Hex = "#";
+        const em = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F"];
+        array.map(item => {
+            if (item < 10) {
+                Hex = Hex + "0" + item;
+            } else {
+                let hexLeft = Math.floor(item / 16);
+                let hexRight = item % 16;
+                Hex = Hex + em[hexLeft] + em[hexRight];
+            }
+        })
+        let hexValue = document.getElementById("hexValue");
+        hexValue.innerText = Hex;
+    }
+    function toHex() {
+        let string = document.getElementById("sixth").value;
+        const em = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F"];
+        let real = string.split("#")[1] ?? string;
+        if (real.length !== 3 && real.length !== 6) {
+            console.log("必须为3位或者6位");
+            return false;
+        }
+        real = real.toUpperCase();
+        if (real.length === 3) {
+            real += real;
+        }
+        let array = real.split("");
+        let rgb = "";
+        let first = 0;
+        array.map((item, index) => {
+            if (index % 2 === 0) {
+                first = em.findIndex(emitem => { return emitem === item });
+            } else {
+                let second = em.findIndex(emitem => { return emitem === item });
+                rgb = rgb + (first * 16 + second) + ",";
+            }
+        })
+        rgb = rgb.substring(0, rgb.length - 1);
+        document.getElementById("sixthValue").innerText = "rgb(" + rgb + ")";
+    }
+</script>
+
+</html>
